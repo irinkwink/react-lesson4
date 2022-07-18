@@ -1,37 +1,27 @@
-import {useState} from 'react';
+import {useState, useMemo} from 'react';
 import style from './FunctionalComponent.module.css';
 import PropTypes from 'prop-types';
-import Button from './Button';
 
 export const FunctionalComponent = ({min, max}) => {
   const [userNumber, setUserNumber] = useState('');
   const [result, setResult] = useState('Результат');
   const [count, setCount] = useState(0);
-  const [randomNumber] = useState(
-    Math.floor(Math.random() * (max - min + 1)) + min
-  );
+  const [finish, setFinish] = useState(false);
+  const [tempRandom, setTempRandom] = useState(0);
 
-  const [showButton, setShowButton] = useState(true);
+  const randomNumber = useMemo(() => {
+    setFinish(false);
+    return Math.floor(Math.random() * (max - min + 1)) + min;
+  }, [finish]);
 
-  // useEffect(() => {
-  //   console.log('useEffect - CDU');
-  // });
-
-  // useEffect(() => {
-  //   console.log('[] useEffect - CDM');
-  //   return () => {
-  //     console.log('CWU');
-  //   };
-  // }, []);
-
-  // useEffect(() => {
-  //   console.log('[userNumber] useEffect - CDM');
-  // }, [userNumber]);
 
   const handleSubmit = e => {
     e.preventDefault();
 
     setCount(prevCount => prevCount + 1);
+    if (tempRandom + 1 >= 1) {
+      setTempRandom(Math.random());
+    }
 
     setResult(() => {
       if (!userNumber || userNumber < min || userNumber > max) {
@@ -45,7 +35,8 @@ export const FunctionalComponent = ({min, max}) => {
       if (userNumber < randomNumber) {
         return `${userNumber} меньше загаданного числа`;
       }
-      setShowButton(false);
+
+      setFinish(true);
       return `Угадали, загаданное число ${userNumber}`;
     });
   };
@@ -54,9 +45,11 @@ export const FunctionalComponent = ({min, max}) => {
     setUserNumber(e.target.value);
   };
 
+  console.log(randomNumber);
   return (
     <div className={style.game}>
       <p className={style.result}>{result}</p>
+      <p className={style.result}>{tempRandom}</p>
       <form className={style.form} onSubmit={handleSubmit}>
         <label className={style.label} htmlFor='user_number'>
           Попыток: {count}
@@ -68,8 +61,7 @@ export const FunctionalComponent = ({min, max}) => {
           value ={userNumber}
           onChange ={handleChange}
         />
-        {showButton && <Button />}
-        {/* <button className={style.btn}>Угадать</button> */}
+        <button className={style.btn}>Угадать</button>
       </form>
     </div>
   );
