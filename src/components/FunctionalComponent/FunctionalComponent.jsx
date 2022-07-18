@@ -1,6 +1,7 @@
 import {useState} from 'react';
 import style from './FunctionalComponent.module.css';
 import PropTypes from 'prop-types';
+import Button from './Button';
 
 export const FunctionalComponent = ({min, max}) => {
   const [userNumber, setUserNumber] = useState('');
@@ -9,6 +10,23 @@ export const FunctionalComponent = ({min, max}) => {
   const [randomNumber] = useState(
     Math.floor(Math.random() * (max - min + 1)) + min
   );
+
+  const [showButton, setShowButton] = useState(true);
+
+  // useEffect(() => {
+  //   console.log('useEffect - CDU');
+  // });
+
+  // useEffect(() => {
+  //   console.log('[] useEffect - CDM');
+  //   return () => {
+  //     console.log('CWU');
+  //   };
+  // }, []);
+
+  // useEffect(() => {
+  //   console.log('[userNumber] useEffect - CDM');
+  // }, [userNumber]);
 
   const handleSubmit = e => {
     e.preventDefault();
@@ -27,7 +45,7 @@ export const FunctionalComponent = ({min, max}) => {
       if (userNumber < randomNumber) {
         return `${userNumber} меньше загаданного числа`;
       }
-
+      setShowButton(false);
       return `Угадали, загаданное число ${userNumber}`;
     });
   };
@@ -50,7 +68,8 @@ export const FunctionalComponent = ({min, max}) => {
           value ={userNumber}
           onChange ={handleChange}
         />
-        <button className={style.btn}>Угадать</button>
+        {showButton && <Button />}
+        {/* <button className={style.btn}>Угадать</button> */}
       </form>
     </div>
   );
